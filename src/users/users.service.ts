@@ -19,19 +19,26 @@ export class UsersService {
         return this.userModel.findOneAndUpdate({ telegramId }, { isSubscribed: false }, { new: true }).exec();
     }
 
-    async findAllPaginated(page: number, pageSize: number): Promise<UserDocument[]> {
+    async findAllPaginated(page: number, pageSize: number): Promise<{ users: UserDocument[], total_users: number, total_pages: number }> {
         const skip = (page - 1) * pageSize;
-        return this.userModel
-            .find()
-            .skip(skip)
-            .limit(pageSize)
-            .select('-_id -__v')
-            .exec();
+      
+        const users = await this.userModel
+          .find()
+          .skip(skip)
+          .limit(pageSize)
+          .select('-id -_v')
+          .exec();
+      
+        const total_users = await this.userModel.countDocuments().exec();
+      
+        const total_pages = Math.ceil(total_users / pageSize);
+      
+        return {
+          users,
+          total_users,
+          total_pages,
+        };
     }
-
-    async findAllUsers(): Promise<UserDocument[]> {
-        return this.userModel.find().select('-_id -__v').exec();
-    }    
 
     async deleteUser(telegramId: number): Promise<UserDocument> {
         return this.userModel.findOneAndDelete({ telegramId }).exec();

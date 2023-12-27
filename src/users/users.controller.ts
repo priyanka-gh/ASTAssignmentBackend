@@ -16,11 +16,6 @@ export class UsersController {
     return this.usersService.findAllPaginated(page, pageSize);
   }
 
-  @Get('/all')
-  async findAllUsers() {
-    return this.usersService.findAllUsers();
-  }
-
   @Delete(':telegramId')
   async deleteUser(@Param('telegramId') telegramId: number) {
     const deletedUser = await this.usersService.deleteUser(telegramId);
