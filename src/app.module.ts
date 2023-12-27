@@ -7,11 +7,12 @@ import { ConfigModule } from './config/config.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
+import {ConfigModule as EnvConfig} from '@nestjs/config'
 @Module({
   imports: [
+    EnvConfig.forRoot(),
     ScheduleModule.forRoot(),
-    MongooseModule.forRoot('mongodb+srv://priyankaghanselaa:abcd123@cluster0.5juypze.mongodb.net/?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(process.env.MONGO_URL),
     TelegramModule,
     UsersModule,
     WeatherModule,
